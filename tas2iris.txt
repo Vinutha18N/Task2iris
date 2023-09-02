@@ -1,0 +1,62 @@
+import numpy as np 
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
+pwd
+data = pd.read_csv ('C:\\Users\\Admin\\OneDrive\\Desktop\\Oasis Infobyte\\Iris.csv')
+data.head()
+data.describe()
+data.shape
+data.isnull().sum()
+distribution = data.Species.value_counts()
+print(distribution)
+lab = data.Species.unique().tolist()
+print(lab)
+plt.pie(distribution, labels = lab, autopct = '%1.1f%%', startangle = 140)
+plt.axis('equal')
+plt.title('Species Distribution', fontsize = 15)
+plt.show()
+plt.subplots(figsize = (7, 7))
+sns.scatterplot(x = "SepalLengthCm", y = "SepalWidthCm", data = data, hue = "Species")
+plt.show()
+plt.subplots(figsize = (7,7))
+sns.scatterplot(x = "PetalLengthCm", y = "PetalWidthCm", data = data, hue = "Species")
+plt.show()
+data1 = data.drop("Id", axis = 1)
+plot = sns.pairplot(data1, hue = "Species", diag_kind = "hist")
+plot.fig.suptitle("Relationship of features with each other", y = 1.1, fontsize = 15)
+plt.show()
+from sklearn.model_selection import train_test_split
+X = data.drop(["Species", "Id"], axis = 1)
+X
+Y = data["Species"]
+Y
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import StandardScaler
+model = LogisticRegression(max_iter = 1000)
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size = 0.3, random_state = 1)
+model.fit(x_train, y_train)
+predictions = model.predict(x_test)
+print(classification_report(y_test, predictions))
+print("Confusion Matrix\n", confusion_matrix(y_test, predictions))
+accuracy = accuracy_score(y_test,predictions)
+print(f"Accuracy: {accuracy*100:.2f}%")
+
+new_data = pd.DataFrame({
+    'SepalLengthCm': [5.1],
+    'SepalWidthCm': [3.5],
+    'PetalLengthCm': [1.4],
+    'PetalWidthCm': [0.2]
+})
+
+scaler = StandardScaler()
+scaled_new_data = scaler.fit_transform(new_data)
+
+predicted_species = model.predict(scaled_new_data)
+
+print(f"The predicted species is {predicted_species}")
